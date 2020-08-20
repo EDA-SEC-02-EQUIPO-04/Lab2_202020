@@ -1,5 +1,5 @@
-id;nombre;telefono;empresa
-1;Pedro Perez;123;Los Alpes
-2;Juan Pedro Rodriguez;Los Montes
-3;Juana Rangel;Las Sierras
-4;Ana Hernandez;Los Cerros
+id;nombre              ;telefono   ;empresa
+1 ;Pedro Perez         ;123        ;Los Alpes
+2 ;Juan Pedro Rodriguez;Los Montes
+3 ;Juana Rangel        ;Las Sierras
+4 ;Ana Hernandez       ;Los Cerros
