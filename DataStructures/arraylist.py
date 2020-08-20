@@ -22,10 +22,10 @@
   Este módulo implementa una estructura de datos lineal, como un arreglo de apuntadores a 
   los nodos de la lista.
 """
+import config
 from Utils import error as error
 
-
-def newList(cmpfunction=None):
+def newList (cmpfunction=None):
     """Crea una lista vacia.
 
     Args:
@@ -36,7 +36,7 @@ def newList(cmpfunction=None):
     Raises:
 
     """
-    new_list = {'elements': [], 'size': 0, 'type': 'ARRAY_LIST', 'cmpfunction': cmpfunction}
+    new_list = {'elements':[], 'size':0, 'type':'ARRAY_LIST','cmpfunction':cmpfunction }
     return (new_list)
 
 
@@ -57,10 +57,12 @@ def addFirst(lst, element):
         Exception
     """
     try:
-        lst['elements'].insert(0, element)
+        lst['elements'].insert (0,element)
         lst['size'] += 1
     except Exception as exp:
-        error.reraise(exp, 'arraylist->addFirst: ')
+        error.reraise (exp, 'arraylist->addFirst: ')
+       
+
 
 
 def addLast(lst, element):
@@ -77,13 +79,14 @@ def addLast(lst, element):
         Exception
     """
     try:
-        lst['elements'].append(element)
+        lst['elements'].append (element)
         lst['size'] += 1
     except Exception as exp:
-        error.reraise(exp, 'arraylist->addLast: ')
+        error.reraise (exp, 'arraylist->addLast: ')
 
 
-def isEmpty(lst):
+
+def isEmpty (lst):
     """ Indica si la lista está vacía
 
     Args: 
@@ -95,7 +98,9 @@ def isEmpty(lst):
     try:
         return lst['size'] == 0
     except Exception as exp:
-        error.reraise(exp, 'arraylist->isEmpty: ')
+        error.reraise (exp, 'arraylist->isEmpty: ')
+
+
 
 
 def size(lst):
@@ -108,12 +113,15 @@ def size(lst):
         Exception
     """
     try:
-        return lst['size']
+        return lst['size'] 
     except Exception as exp:
-        error.reraise(exp, 'arraylist->size: ')
+        error.reraise (exp, 'arraylist->size: ')
 
 
-def firstElement(lst):
+
+
+
+def firstElement (lst):
     """ Retorna el primer elemento de una lista no vacía. No se elimina el elemento.
 
     Args: 
@@ -125,10 +133,13 @@ def firstElement(lst):
     try:
         return lst['elements'][0]
     except Exception as exp:
-        error.reraise(exp, 'arraylist->firstElement: ')
+        error.reraise (exp, 'arraylist->firstElement: ')
 
 
-def lastElement(lst):
+
+
+
+def lastElement (lst):
     """ Retorna el último elemento de una  lista no vacia.  No se elimina el elemento.
 
     Args:
@@ -138,12 +149,14 @@ def lastElement(lst):
         Exception
     """
     try:
-        return lst['elements'][lst['size'] - 1]
+        return lst['elements'][lst['size']-1]
     except Exception as exp:
-        error.reraise(exp, 'arraylist->lastElement: ')
+        error.reraise (exp, 'arraylist->lastElement: ')
 
 
-def getElement(lst, pos):
+
+
+def getElement (lst, pos):
     """ Retorna el elemento en la posición pos de la lista.
 
     Se recorre la lista hasta el elemento pos, el cual  debe ser mayor que cero y menor o igual al tamaño de la lista.
@@ -157,12 +170,14 @@ def getElement(lst, pos):
         Exception
     """
     try:
-        return lst['elements'][pos - 1]
+        return lst['elements'][pos-1]
     except Exception as exp:
-        error.reraise(exp, 'arraylist->getElement: ')
+        error.reraise (exp, 'arraylist->getElement: ')
 
 
-def deleteElement(lst, pos):
+
+
+def deleteElement (lst, pos):
     """ Elimina el elemento en la posición pos de la lista.
     
     Elimina el elemento que se encuentra en la posición pos de la lista.  Pos debe ser mayor que cero y menor 
@@ -176,13 +191,15 @@ def deleteElement(lst, pos):
         Exception
     """
     try:
-        lst['elements'].pop(pos - 1)
-        lst['size'] -= 1
+        lst['elements'].pop(pos-1)
+        lst['size'] -= 1    
     except Exception as exp:
-        error.reraise(exp, 'arraylist->deleteElement: ')
+        error.reraise (exp, 'arraylist->deleteElement: ')
 
 
-def removeFirst(lst):
+
+
+def removeFirst (lst):
     """ Remueve el primer elemento de la lista. 
     
     Elimina y retorna el primer elemento de la lista.  El tamaño de la lista se decrementa en uno.  Si la lista
@@ -199,10 +216,12 @@ def removeFirst(lst):
         lst['size'] -= 1
         return element
     except Exception as exp:
-        error.reraise(exp, 'arraylist->removeFirst: ')
+        error.reraise (exp, 'arraylist->removeFirst: ')
 
 
-def removeLast(lst):
+
+
+def removeLast (lst):
     """ Remueve el último elemento de la lista.
     
     Elimina el último elemento de la lista  y lo retorna en caso de existir. El tamaño de la lista se decrementa en 1. 
@@ -215,14 +234,16 @@ def removeLast(lst):
         Exception
     """
     try:
-        element = lst['elements'].pop(lst['size'] - 1)
+        element = lst['elements'].pop(lst['size']-1)
         lst['size'] -= 1
         return element
     except Exception as exp:
-        error.reraise(exp, 'arraylist->remoLast: ')
+        error.reraise (exp, 'arraylist->remoLast: ')
 
 
-def insertElement(lst, element, pos):
+
+
+def insertElement (lst, element, pos):
     """ Inserta el elemento element en la posición pos de la lista. 
     
     Inserta el elemento en la posición pos de la lista. La lista puede ser vacía.  Se incrementa en 1 el tamaño de la lista.
@@ -236,13 +257,16 @@ def insertElement(lst, element, pos):
         Exception
     """
     try:
-        lst['elements'].insert(pos - 1, element)
+        lst['elements'].insert (pos-1,element) 
         lst['size'] += 1
     except Exception as exp:
-        error.reraise(exp, 'arraylist->insertElement: ')
+        error.reraise (exp, 'arraylist->insertElement: ')
 
 
-def isPresent(lst, element):
+
+
+
+def isPresent (lst, element):
     """ Informa si el elemento element esta presente en la lista. 
     
     Informa si un elemento está en la lista.  Si esta presente, retorna la posición en la que se encuentra 
@@ -260,18 +284,21 @@ def isPresent(lst, element):
         size = lst['size']
         if size > 0:
             keyexist = False
-            for keypos in range(1, size + 1):
-                if (lst['cmpfunction'](element, lst['elements'][keypos - 1]) == 0):
+            for keypos in range (1,size+1):
+                if (lst['cmpfunction'] (element, lst['elements'][keypos-1])==0):
                     keyexist = True
                     break
             if keyexist:
                 return keypos
-        return 0
+        return 0   
     except Exception as exp:
-        error.reraise(exp, 'arraylist->isPresent: ')
+        error.reraise (exp, 'arraylist->isPresent: ')
 
 
-def changeInfo(lst, pos, newinfo):
+
+
+
+def changeInfo (lst, pos, newinfo):
     """ Cambia la informacion contenida en el nodo de la lista que se encuentra en la posicion pos.
     
     Args:   
@@ -283,12 +310,14 @@ def changeInfo(lst, pos, newinfo):
         Exception
     """
     try:
-        lst['elements'][pos - 1] = newinfo
+        lst['elements'][pos-1] = newinfo
     except Exception as exp:
-        error.reraise(exp, 'arraylist->changeInfo: ')
+        error.reraise (exp, 'arraylist->changeInfo: ')
 
 
-def exchange(lst, pos1, pos2):
+
+
+def exchange (lst, pos1, pos2):
     """ Intercambia la informacion en las posiciones pos1 y pos2 de la lista.
 
     Args:
@@ -300,16 +329,19 @@ def exchange(lst, pos1, pos2):
         Exception
     """
     try:
-        infopos1 = getElement(lst, pos1)
-        infopos2 = getElement(lst, pos2)
-        changeInfo(lst, pos1, infopos2)
-        changeInfo(lst, pos2, infopos1)
+        infopos1 = getElement (lst, pos1)
+        infopos2 = getElement (lst, pos2)
+        changeInfo (lst, pos1, infopos2)
+        changeInfo (lst, pos2, infopos1)
         return lst
     except Exception as exp:
-        error.reraise(exp, 'arraylist->exchange: ')
+        error.reraise (exp, 'arraylist->exchange: ')
 
 
-def subList(lst, pos, numelem):
+
+
+
+def subList (lst, pos, numelem):
     """ Retorna una sublista de la lista lst.
     
     Se retorna una lista que contiene los elementos a partir de la posicion pos, con una longitud de numelem elementos.  
@@ -324,14 +356,16 @@ def subList(lst, pos, numelem):
         Exception
     """
     try:
-        sublst = {'elements': [], 'size': 0, 'type': 'ARRAY_LIST', 'cmpfunction': lst['cmpfunction']}
-        elem = pos - 1
+        sublst = {'elements':[], 'size':0, 'type':'ARRAY_LIST', 'cmpfunction':lst['cmpfunction'] }
+        elem = pos-1
         cont = 1
-        while cont <= numelem:
-            sublst['elements'].append(lst['elements'][elem])
+        while  cont <= numelem:
+            sublst['elements'].append (lst['elements'][elem])
             sublst['size'] += 1
             elem += 1
             cont += 1
         return sublst
     except Exception as exp:
-        error.reraise(exp, 'arraylist->subList: ')
+        error.reraise (exp, 'arraylist->subList: ')
+
+

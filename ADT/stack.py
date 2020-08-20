@@ -19,15 +19,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
-from DataStructures import liststructure as lt
+import config
 from Utils import error as error
+from DataStructures import liststructure as lt
 
 """
   Este módulo implementa el tipo abstracto de datos pila (Stack) sobre una lista.
 """
 
-
-def newStack(datastructure='SINGLE_LINKED'):
+def newStack(datastructure = 'SINGLE_LINKED'):
     """ Crea una pila vacia.
      
     Args:
@@ -41,10 +41,11 @@ def newStack(datastructure='SINGLE_LINKED'):
     try:
         return lt.newList(datastructure, None)
     except Exception as exp:
-        error.reraise(exp, 'TADStack->newStack: ')
+        error.reraise (exp, 'TADStack->newStack: ')
+    
 
 
-def push(stack, element):
+def push (stack, element):
     """ Agrega el elemento element en el tope de la pila.
 
     Args:
@@ -57,14 +58,16 @@ def push(stack, element):
     Raises: 
         Exception
     """
-    try:
-        lt.addFirst(stack, element)
+    try: 
+        lt.addFirst (stack, element)
         return stack
     except Exception as exp:
-        error.reraise(exp, 'TADStack->Push: ')
+        error.reraise (exp, 'TADStack->Push: ')
+    
 
 
-def pop(stack):
+
+def pop (stack):
     """ Retorna el elemento  presente en el tope de la pila.
 
      Args:
@@ -77,12 +80,14 @@ def pop(stack):
         Exception   
     """
     try:
-        return lt.removeFirst(stack)
+        return lt.removeFirst (stack)
     except Exception as exp:
-        error.reraise(exp, 'TADStack->pop: ')
+        error.reraise (exp, 'TADStack->pop: ')
 
 
-def isEmpty(stack):
+
+
+def isEmpty (stack):
     """Informa si la pila es vacía o no 
      Args:
         stack:  La pila a examinar
@@ -97,10 +102,12 @@ def isEmpty(stack):
     try:
         return lt.isEmpty(stack)
     except Exception as exp:
-        error.reraise(exp, 'TADStack->isEmpty: ')
+        error.reraise (exp, 'TADStack->isEmpty: ')
 
 
-def top(stack):
+
+
+def top (stack):
     """ Retorna el elemento en tope de la pila, sin eliminarlo de la pila 
          
     Args:
@@ -112,13 +119,16 @@ def top(stack):
     Raises: 
         Exception  
     """
-    try:
+    try: 
         return lt.firstElement(stack)
     except Exception as exp:
-        error.reraise(exp, 'TADStack->top: ')
+        error.reraise (exp, 'TADStack->top: ')
 
 
-def size(stack):
+
+
+
+def size (stack):
     """ Informa el número de elementos en la pila
     Args:
         stack: La pila a examinar
@@ -132,4 +142,4 @@ def size(stack):
     try:
         return lt.size(stack)
     except Exception as exp:
-        error.reraise(exp, 'TADStack->size: ')
+        error.reraise (exp, 'TADStack->size: ')
