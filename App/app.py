@@ -32,9 +32,8 @@ import csv
 from ADT import list as lt
 from DataStructures import listiterator as it
 from DataStructures import liststructure as lt
-
 from time import process_time
-
+from Sorting import insertionsort as ins
 
 def loadCSVFile(file, sep=";"):
     """
@@ -114,27 +113,45 @@ def countElementsByCriteria(criteria, column, lst):
     """
     Retorna la cantidad de elementos que cumplen con un criterio para una columna dada
     """
-    if lst['size'] == 0:
-        print('La lista está vacía')
-        return 0
-    else:
-        t1_start = process_time()
-        counter = 0
-        iterator = it.newIterator(lst)
-         
-
-
-        t1_stop = process_time()
-        print("Tiempo de ejecución ", t1_stop - t1_start, " segundos")
     return 0
 
+def obtener_peliculas(lst, numero):
+    peliculas = lst['vote_average']
+    mejores_peliculas = lt.newList()
+    for cont in range (1, number+1):
+        pelicula = lt.getElement (vote_average, cont)
+        lt.addLast (mejores_peliculas, pelicula)
+    return mejores_peliculas
 
-def orderElementsByCriteria(function, column, lst, elements):
+def orderElementsByCriteria(criteria, lst, elementos, funcion):
     """
     Retorna una lista con cierta cantidad de elementos ordenados por el criterio
     """
-    
-    return 0
+    if lst['size']==0:
+        print("La lista está vacía")
+    else:
+        if funcion == 1:
+            t1_start = it.process_time()
+            lista = obtener_peliculas(criteria,lst)
+            ordenada = ins.insertionsrot(lista[2],compareratings)
+            mejores = ordenada[0:int(elementos)]
+            t1_stop = it.process_time()
+            print("Tiempo de ejecución ", t1_stop - t1_start, " segundos")
+        elif funcion == 2:
+            t1_start = it.process_time()
+            lista = obtener_peliculas(criteria,lst)
+            ordenada = ins.selectionsort(lista[2],compareratings)
+            mejores = ordenada[0:int(elementos)]
+            t1_stop = it.process_time()
+            print("Tiempo de ejecución ", t1_stop - t1_start, " segundos")
+        elif funcion == 3:
+            t1_start = it.process_time()
+            lista = obtener_peliculas(criteria,lst)
+            ordenada = ins.shellsort(lista[2],compareratings)
+            mejores = ordenada[0:int(elementos)]
+            t1_stop = it.process_time()
+            print("Tiempo de ejecución ", t1_stop - t1_start, " segundos")
+    return elementos
 
 
 def main():
@@ -146,19 +163,21 @@ def main():
     Return: None 
     """
     lista = lt.newList()  # se require usar lista definida
+    lista2 = lt.newList()
     while True:
         printMenu()  # imprimir el menu de opciones en consola
         inputs = input('Seleccione una opción para continuar:\n')  # leer opción ingresada
         if len(inputs) > 0:
             if int(inputs[0]) == 1:  # opcion 1
-                lista = loadCSVFile("Data/test.csv")  # llamar funcion cargar datos
+                lista = loadCSVFile("Data/Peliculas/MoviesCastingRaw-small.csv")  # llamar funcion cargar datos
+                lista2 = loadCSVFile("Data/Peliculas/SmallMoviesDetalsCleaned.csv")
                 print("Datos cargados, ", lista['size'], " elementos cargados")
             elif int(inputs[0]) == 2:  # opcion 2
                 if lista == None or lista['size'] == 0:  # obtener la longitud de la lista
                     print("La lista esta vacía")
                 else:
                     print("La lista tiene ", lista['size'], " elementos")
-                    print(lista)
+                    print(lista["first"]["info"])
             elif int(inputs[0]) == 3:  # opcion 3
                 if lista == None or lista['size'] == 0:  # obtener la longitud de la lista
                     print("La lista esta vacía")
@@ -174,10 +193,16 @@ def main():
                     criteria = input('Ingrese el criterio de búsqueda\n')
                     counter = countElementsByCriteria(criteria, 0, lista)
                     print("Coinciden ", counter, " elementos con el crtierio: '", criteria, "' (en construcción ...)")
-            elif int(inpusts[0]) == 5: # opción 5
+            elif int(inputs[0]) == 5: # opción 5
                 if lista == None or lista['size'] == 0:
                     print("La lista está vacía")
-                    
+                else:
+                    print("¿Cómo quiere ordenar los elementos?")
+                    print("Seleccione 1 para insertion sort")
+                    print("Seleccione 2 para selection sort")
+                    print("Seleccione 3 para shell sort")
+                    numero = input ("Buscando los top: ")
+                    orderElementsByCriteria(lista["vote_average"],lista,numero,funcion)
             elif int(inputs[0]) == 0:  # opcion 0, salir
                 sys.exit(0)
 
