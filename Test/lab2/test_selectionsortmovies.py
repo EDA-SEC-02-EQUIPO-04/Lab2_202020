@@ -86,9 +86,9 @@ def test_loading_CSV_y_ordenamiento():
     setUp()
     sort.selectionSort(lst_movies, less)
     while not (lt.isEmpty(lst_movies)):
-        x = int(lt.removeLast(lst_movies)['vote_average'])
+        x = float(lt.removeLast(lst_movies)['vote_average'])
         if not (lt.isEmpty(lst_movies)):
-            y = int(lt.lastElement(lst_movies)['vote_average'])
+            y = float(lt.lastElement(lst_movies)['vote_average'])
         else:
             break
         assert x > y
