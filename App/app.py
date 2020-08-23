@@ -30,8 +30,8 @@ import config as cf
 import sys
 import csv
 from ADT import list as lt
-from DataStructures import listiterator as it
-from DataStructures import liststructure as lt
+from DataStructures import listiterator.py as it
+from DataStructures import liststructure.py as lt
 
 from time import process_time
 
@@ -133,10 +133,10 @@ def countElementsByCriteria(criteria, column, lst):
                     if actual_vote >= 'vote_average':
                         good_movies_v.append(actual_vote)# Calculate number of good movies and total vote average of director.
         count_good_movies = len(good_movies_v)
-        final_vote_average = sum(good_movies_v) / count_good_movies
+        f_vote_average = sum(good_movies_v) / count_good_movies
         t1_stop = process_time()  # tiempo final
         print('Tiempo de ejecución ', t1_stop - t1_start, ' segundos')
-    return (all_director_movies, count_movies, round(final_vote_average, 1))
+    return (all_director_movies, count_movies, round(f_vote_average, 1))
 
 
 def orderElementsByCriteria(function, column, lst, elements):
