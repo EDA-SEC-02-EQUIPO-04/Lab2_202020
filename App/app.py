@@ -54,10 +54,10 @@ def load_csv_file(file_d, file_c, sep=';'):
         Borra la lista e informa al usuario
     Returns: None
     """
-    lst_d = lt.newList("ARRAY_LIST")  # Usando implementacion arraylist
-    lst_c = lt.newList("ARRAY_LIST")  # Usando implementacion arraylist
-    # lst_d = lt.newList()  # Usando implementacion linkedlist
-    # lst_c = lt.newList()  # Usando implementacion linkedlist
+    lst_d = lt.newList('ARRAY_LIST')  # Usando implementacion arraylist
+    lst_c = lt.newList('ARRAY_LIST')  # Usando implementacion arraylist
+    # lst_d = lt.newList('SINGLE_LINKED')  # Usando implementacion linkedlist
+    # lst_c = lt.newList('SINGLE_LINKED')  # Usando implementacion linkedlist
     print('Cargando archivos...')
     t1_start = process_time()  # tiempo inicial
     dialect = csv.excel()
@@ -71,13 +71,14 @@ def load_csv_file(file_d, file_c, sep=';'):
             for row in spamreader_c:
                 lt.addLast(lst_c, row)
     except:
-        # lst_d = lt.newList("ARRAY_LIST")  #Usando implementacion arraylist
-        # lst_c = lt.newList("ARRAY_LIST")  #Usando implementacion arraylist
-        lst_d = lt.newList()  # Usando implementacion linkedlist
-        lst_c = lt.newList()  # Usando implementacion linkedlist
+        # lst_d = lt.newList('ARRAY_LIST')  #Usando implementacion arraylist
+        # lst_c = lt.newList('ARRAY_LIST')  #Usando implementacion arraylist
+        lst_d = lt.newList('SINGLE_LINKED')  # Usando implementacion linkedlist
+        lst_c = lt.newList('SINGLE_LINKED')  # Usando implementacion linkedlist
         print('Se presento un error en la carga de los archivos')
     t1_stop = process_time()  # tiempo final
     print('Tiempo de ejecución ', t1_stop - t1_start, ' segundos')
+    print('Tamaño de la lista:', lst_d['size'])
     return lst_d, lst_c
 
 
@@ -110,7 +111,7 @@ def cantidad_peliculas_director(director, column, lst):
             la cantidad de veces ue aparece un elemento con el criterio definido
     """
     if lst['size'] == 0:
-        print("La lista esta vacía")
+        print('La lista esta vacía')
         return 0
     else:
         t1_start = process_time()  # tiempo inicial
@@ -121,7 +122,7 @@ def cantidad_peliculas_director(director, column, lst):
             if director.lower() in element[column].lower():  # filtrar por palabra clave
                 counter += 1
         t1_stop = process_time()  # tiempo final
-        print("Tiempo de ejecución ", t1_stop - t1_start, " segundos")
+        print('Tiempo de ejecución ', t1_stop - t1_start, ' segundos')
     return counter
 
 
@@ -184,14 +185,26 @@ def conocer_director(director, lst_d, lst_c):
     return all_director_movies, counter_movies, round(total_vote_average, 1)
 
 
-def less(element1, element2):
+def less_average(element1, element2):
     if float(element1['vote_average']) < float(element2['vote_average']):
         return True
     return False
 
 
-def greater(element1, element2):
+def greater_average(element1, element2):
     if float(element1['vote_average']) > float(element2['vote_average']):
+        return True
+    return False
+
+
+def less_count(element1, element2):
+    if float(element1['vote_count']) < float(element2['vote_count']):
+        return True
+    return False
+
+
+def greater_count(element1, element2):
+    if float(element1['vote_count']) > float(element2['vote_count']):
         return True
     return False
 
@@ -205,42 +218,31 @@ def order_movies(function, lst_d, req_elements, algorithm, column):
         return []
     else:
         t1_start = process_time()  # tiempo inicial
-        movies_votes = []
-        # Search all movies votes depending on parameter.
-        for element in lst_d['elements']:
-            movies_votes.append(element[column])
         # Sort movies.
         if algorithm == 'selection':
             if function == 'less':
-                selection.selectionSort(movies_votes, less)
+                selection.selectionSort(lst_d, less_count) if column == 'vote_count' \
+                    else selection.selectionSort(lst_d, less_average)
             elif function == 'greater':
-                selection.selectionSort(movies_votes, greater)
+                selection.selectionSort(lst_d, greater_count) if column == 'vote_count' \
+                    else selection.selectionSort(lst_d, greater_average)
         elif algorithm == 'shell':
             if function == 'less':
-                shell.shellSort(movies_votes, less)
+                shell.shellSort(lst_d, less_count) if column == 'vote_count' \
+                    else shell.shellSort(lst_d, less_average)
             elif function == 'greater':
-                shell.shellSort(movies_votes, greater)
+                shell.shellSort(lst_d, greater_count) if column == 'vote_count' \
+                    else shell.shellSort(lst_d, greater_average)
         elif algorithm == 'insertion':
             if function == 'less':
-                insertion.insertionSort(movies_votes, less)
+                insertion.insertionSort(lst_d, less_count) if column == 'vote_count' \
+                    else insertion.insertionSort(lst_d, less_average)
             elif function == 'greater':
-                insertion.insertionSort(movies_votes, greater)
-        # Assign movie to vote_average or count.
-        if column == 'vote_average':
-            for index_movie in range(req_elements):
-                for movie in lst_d:
-                    if movie['vote_average'] == movies_votes[index_movie]:
-                        movies_votes[index_movie] = {'vote_average': movies_votes[index_movie], 'movie_data': movie}
-                        break
-        else:
-            for index_movie in range(req_elements):
-                for movie in lst_d:
-                    if movie['vote_count'] == movies_votes[index_movie]:
-                        movies_votes[index_movie] = {'vote_count': movies_votes[index_movie], 'movie_data': movie}
-                        break
+                insertion.insertionSort(lst_d, greater_count) if column == 'vote_count' \
+                    else insertion.insertionSort(lst_d, greater_average)
         t1_stop = process_time()  # tiempo final
         print('Tiempo de ejecución ', t1_stop - t1_start, ' segundos')
-    return movies_votes
+    return lt.subList(lst_d, 0, int(req_elements))
 
 
 def main():
