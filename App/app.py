@@ -76,6 +76,7 @@ def printMenu():
     print("2- Contar los elementos de la Lista")
     print("3- Contar elementos filtrados por palabra clave")
     print("4- Consultar elementos a partir de dos listas")
+    print("5- Consultar tiempo según el ordenamiento")
     print("0- Salir")
 
 
@@ -113,6 +114,18 @@ def countElementsByCriteria(criteria, column, lst):
     """
     Retorna la cantidad de elementos que cumplen con un criterio para una columna dada
     """
+    if lst['size'] == 0:
+        print('La lista está vacía')
+        return 0
+    else:
+        t1_start = process_time()
+        counter = 0
+        iterator = it.newIterator(lst)
+         
+
+
+        t1_stop = process_time()
+        print("Tiempo de ejecución ", t1_stop - t1_start, " segundos")
     return 0
 
 
@@ -120,6 +133,7 @@ def orderElementsByCriteria(function, column, lst, elements):
     """
     Retorna una lista con cierta cantidad de elementos ordenados por el criterio
     """
+    
     return 0
 
 
@@ -134,7 +148,7 @@ def main():
     lista = lt.newList()  # se require usar lista definida
     while True:
         printMenu()  # imprimir el menu de opciones en consola
-        inputs = input('Seleccione una opción para continuar\n')  # leer opción ingresada
+        inputs = input('Seleccione una opción para continuar:\n')  # leer opción ingresada
         if len(inputs) > 0:
             if int(inputs[0]) == 1:  # opcion 1
                 lista = loadCSVFile("Data/test.csv")  # llamar funcion cargar datos
@@ -144,12 +158,13 @@ def main():
                     print("La lista esta vacía")
                 else:
                     print("La lista tiene ", lista['size'], " elementos")
+                    print(lista)
             elif int(inputs[0]) == 3:  # opcion 3
                 if lista == None or lista['size'] == 0:  # obtener la longitud de la lista
                     print("La lista esta vacía")
                 else:
-                    criteria = input('Ingrese el criterio de búsqueda\n')
-                    counter = countElementsFilteredByColumn(criteria, "nombre",
+                    criteria = input('Ingrese el criterio de búsqueda\n')                    
+                    counter = countElementsFilteredByColumn(criteria,"nombre",
                                                             lista)  # filtrar una columna por criterio
                     print("Coinciden ", counter, " elementos con el crtierio: ", criteria)
             elif int(inputs[0]) == 4:  # opcion 4
@@ -159,6 +174,10 @@ def main():
                     criteria = input('Ingrese el criterio de búsqueda\n')
                     counter = countElementsByCriteria(criteria, 0, lista)
                     print("Coinciden ", counter, " elementos con el crtierio: '", criteria, "' (en construcción ...)")
+            elif int(inpusts[0]) == 5: # opción 5
+                if lista == None or lista['size'] == 0:
+                    print("La lista está vacía")
+                    
             elif int(inputs[0]) == 0:  # opcion 0, salir
                 sys.exit(0)
 
