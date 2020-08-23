@@ -88,7 +88,8 @@ def test_loading_CSV_y_ordenamiento():
     while not (lt.isEmpty(lst_movies)):
         x = float(lt.removeLast(lst_movies)['vote_average'])
         if not (lt.isEmpty(lst_movies)):
-            y = float(lt.lastElement(lst_movies)['vote_average'])
+            y = float(lt.removeLast(lst_movies)['vote_average'])
         else:
             break
+        print(x, y)
         assert x > y
