@@ -21,7 +21,7 @@
 
 import config as cf
 from ADT import list as lt
-
+import Test
 
 def insertionSort(lst, lessfunction):
     size = lt.size(lst)
@@ -32,3 +32,4 @@ def insertionSort(lst, lessfunction):
             lt.exchange(lst, pos2, pos2 - 1)
             pos2 -= 1
         pos1 += 1
+

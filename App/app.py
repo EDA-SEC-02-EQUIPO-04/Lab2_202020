@@ -34,6 +34,8 @@ from DataStructures import listiterator as it
 from DataStructures import liststructure as lt
 from time import process_time
 from Sorting import insertionsort as ins
+from Test import sorting as ism
+
 
 def loadCSVFile(file, sep=";"):
     """
@@ -115,12 +117,14 @@ def countElementsByCriteria(criteria, column, lst):
     """
     return 0
 
+
 def obtener_peliculas(lst, numero):
-    peliculas = lst['vote_average']
-    mejores_peliculas = lt.newList()
-    for cont in range (1, number+1):
-        pelicula = lt.getElement (vote_average, cont)
-        lt.addLast (mejores_peliculas, pelicula)
+    peliculas = lst
+    lista = []
+    print(lt.getElement(peliculas,12))
+    for i in peliculas:
+        if lt.getElement(peliculas) >= 6:
+            mejores_peliculas = lista.append(lt.getElement(peliculas,i))
     return mejores_peliculas
 
 def orderElementsByCriteria(criteria, lst, elementos, funcion):
@@ -133,21 +137,21 @@ def orderElementsByCriteria(criteria, lst, elementos, funcion):
         if funcion == 1:
             t1_start = it.process_time()
             lista = obtener_peliculas(criteria,lst)
-            ordenada = ins.insertionsrot(lista[2],compareratings)
+            ordenada = ins.insertionsrot(lista,less)
             mejores = ordenada[0:int(elementos)]
             t1_stop = it.process_time()
             print("Tiempo de ejecución ", t1_stop - t1_start, " segundos")
         elif funcion == 2:
             t1_start = it.process_time()
             lista = obtener_peliculas(criteria,lst)
-            ordenada = ins.selectionsort(lista[2],compareratings)
+            ordenada = ins.selectionsort(lista,less)
             mejores = ordenada[0:int(elementos)]
             t1_stop = it.process_time()
             print("Tiempo de ejecución ", t1_stop - t1_start, " segundos")
         elif funcion == 3:
             t1_start = it.process_time()
             lista = obtener_peliculas(criteria,lst)
-            ordenada = ins.shellsort(lista[2],compareratings)
+            ordenada = ins.shellsort(listaless)
             mejores = ordenada[0:int(elementos)]
             t1_stop = it.process_time()
             print("Tiempo de ejecución ", t1_stop - t1_start, " segundos")
@@ -168,6 +172,7 @@ def main():
         printMenu()  # imprimir el menu de opciones en consola
         inputs = input('Seleccione una opción para continuar:\n')  # leer opción ingresada
         if len(inputs) > 0:
+
             if int(inputs[0]) == 1:  # opcion 1
                 lista = loadCSVFile("Data/Peliculas/MoviesCastingRaw-small.csv")  # llamar funcion cargar datos
                 lista2 = loadCSVFile("Data/Peliculas/SmallMoviesDetalsCleaned.csv")
@@ -177,7 +182,7 @@ def main():
                     print("La lista esta vacía")
                 else:
                     print("La lista tiene ", lista['size'], " elementos")
-                    print(lista["first"]["info"])
+                    print(lista["first"]["info"]["vote_average"])
             elif int(inputs[0]) == 3:  # opcion 3
                 if lista == None or lista['size'] == 0:  # obtener la longitud de la lista
                     print("La lista esta vacía")
@@ -201,8 +206,9 @@ def main():
                     print("Seleccione 1 para insertion sort")
                     print("Seleccione 2 para selection sort")
                     print("Seleccione 3 para shell sort")
+                    funcion = input("Seleccione cómo quiere ordenar los elementos: ")
                     numero = input ("Buscando los top: ")
-                    orderElementsByCriteria(lista["vote_average"],lista,numero,funcion)
+                    obtener_peliculas(lista,numero)
             elif int(inputs[0]) == 0:  # opcion 0, salir
                 sys.exit(0)
 
