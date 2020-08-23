@@ -21,12 +21,19 @@
 
 import pytest
 import config
-from DataStructures import singlelinkedlist as slt
-
+import csv
+from DataStructures import listiterator.py as it
+from DataStructures import liststructure as lt
+from DataStructures import arraylist as slt
+from ADT import list as lts
 
 def cmpfunction(element1, element2):
-    if element1 == element2:
+    if element1["book_id"] == element2["book_id"]:
         return 0
+    elif element1["book_id"] < element2["book_id"]:
+        return -1
+    else:
+        return 1
 
 
 @pytest.fixture
@@ -124,6 +131,7 @@ def test_insertElement(lst, books):
 
 def test_isPresent(lstbooks, books):
     book = {'book_id': '10', 'book_title': 'Title 10', 'author': 'author 10'}
+    print(slt.isPresent(lstbooks, books[2]))
     assert slt.isPresent(lstbooks, books[2]) > 0
     assert slt.isPresent(lstbooks, book) == 0
 
@@ -152,3 +160,31 @@ def test_exchange(lstbooks, books):
     slt.exchange(lstbooks, 1, 5)
     assert slt.getElement(lstbooks, 1) == book5
     assert slt.getElement(lstbooks, 5) == book1
+
+def test_carga():
+    lista=[]
+    lst = lt.newList('ARRAY_LIST', cmpfunction) 
+
+    file = 'Data/theMoviesdb/MoviesCastingRaw-small.csv'
+    sep= ';'
+    dialect = csv.excel()
+    dialect.delimiter = sep
+
+
+    assert (lt.size(lst)==0), "La lista no empieza en cero."
+
+    try:
+        with open (file, encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile,dialect=dialect)
+
+            for row in reader:
+                lista.append(row)
+                lt.addLast(lst,row)
+
+    except:
+        assert False, "Se presento un error al cargar el archivo."
+
+    assert len(lista) == lt.size(lst), "Son diferentes tamaños."
+
+    for i in range (len(lista)):
+        assert lt.getElement(lst,i+1)==lista[i], "Las listas no estan en el mismo orden."
