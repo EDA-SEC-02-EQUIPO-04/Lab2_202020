@@ -22,23 +22,20 @@
 import pytest
 import config
 import csv
-from DataStructures import listiterator.py as it
+from DataStructures import singlelinkedlist as lts
+from DataStructures import listiterator as it
 from DataStructures import liststructure as lt
-from DataStructures import arraylist as slt
 from ADT import list as lts
 
+
 def cmpfunction(element1, element2):
-    if element1["book_id"] == element2["book_id"]:
+    if element1 == element2:
         return 0
-    elif element1["book_id"] < element2["book_id"]:
-        return -1
-    else:
-        return 1
 
 
 @pytest.fixture
 def lst():
-    lst = slt.newList(cmpfunction)
+    lst = lts.newList(cmpfunction)
     return lst
 
 
@@ -56,135 +53,134 @@ def books():
 
 @pytest.fixture
 def lstbooks(books):
-    lst = slt.newList(cmpfunction)
+    lst = lts.newList(cmpfunction)
     for i in range(0, 5):
-        slt.addLast(lst, books[i])
+        lts.addLast(lst, books[i])
     return lst
 
 
 def test_empty(lst):
-    assert slt.isEmpty(lst) == True
-    assert slt.size(lst) == 0
+    assert lts.isEmpty(lst) == True
+    assert lts.size(lst) == 0
 
 
 def test_addFirst(lst, books):
-    assert slt.isEmpty(lst) == True
-    assert slt.size(lst) == 0
-    slt.addFirst(lst, books[1])
-    assert slt.size(lst) == 1
-    slt.addFirst(lst, books[2])
-    assert slt.size(lst) == 2
-    book = slt.firstElement(lst)
+    assert lts.isEmpty(lst) == True
+    assert lts.size(lst) == 0
+    lts.addFirst(lst, books[1])
+    assert lts.size(lst) == 1
+    lts.addFirst(lst, books[2])
+    assert lts.size(lst) == 2
+    book = lts.firstElement(lst)
     assert book == books[2]
 
 
 def test_addLast(lst, books):
-    assert slt.isEmpty(lst) == True
-    assert slt.size(lst) == 0
-    slt.addLast(lst, books[1])
-    assert slt.size(lst) == 1
-    slt.addLast(lst, books[2])
-    assert slt.size(lst) == 2
-    book = slt.firstElement(lst)
+    assert lts.isEmpty(lst) == True
+    assert lts.size(lst) == 0
+    lts.addLast(lst, books[1])
+    assert lts.size(lst) == 1
+    lts.addLast(lst, books[2])
+    assert lts.size(lst) == 2
+    book = lts.firstElement(lst)
     assert book == books[1]
-    book = slt.lastElement(lst)
+    book = lts.lastElement(lst)
     assert book == books[2]
 
 
 def test_getElement(lstbooks, books):
-    book = slt.getElement(lstbooks, 1)
+    book = lts.getElement(lstbooks, 1)
     assert book == books[0]
-    book = slt.getElement(lstbooks, 5)
+    book = lts.getElement(lstbooks, 5)
     assert book == books[4]
 
 
 def test_removeFirst(lstbooks, books):
-    assert slt.size(lstbooks) == 5
-    slt.removeFirst(lstbooks)
-    assert slt.size(lstbooks) == 4
-    book = slt.getElement(lstbooks, 1)
+    assert lts.size(lstbooks) == 5
+    lts.removeFirst(lstbooks)
+    assert lts.size(lstbooks) == 4
+    book = lts.getElement(lstbooks, 1)
     assert book == books[1]
 
 
 def test_removeLast(lstbooks, books):
-    assert slt.size(lstbooks) == 5
-    slt.removeLast(lstbooks)
-    assert slt.size(lstbooks) == 4
-    book = slt.getElement(lstbooks, 4)
+    assert lts.size(lstbooks) == 5
+    lts.removeLast(lstbooks)
+    assert lts.size(lstbooks) == 4
+    book = lts.getElement(lstbooks, 4)
     assert book == books[3]
 
 
 def test_insertElement(lst, books):
-    assert slt.isEmpty(lst) is True
-    assert slt.size(lst) == 0
-    slt.insertElement(lst, books[0], 1)
-    assert slt.size(lst) == 1
-    slt.insertElement(lst, books[1], 2)
-    assert slt.size(lst) == 2
-    slt.insertElement(lst, books[2], 1)
-    assert slt.size(lst) == 3
-    book = slt.getElement(lst, 1)
+    assert lts.isEmpty(lst) is True
+    assert lts.size(lst) == 0
+    lts.insertElement(lst, books[0], 1)
+    assert lts.size(lst) == 1
+    lts.insertElement(lst, books[1], 2)
+    assert lts.size(lst) == 2
+    lts.insertElement(lst, books[2], 1)
+    assert lts.size(lst) == 3
+    book = lts.getElement(lst, 1)
     assert book == books[2]
-    book = slt.getElement(lst, 2)
+    book = lts.getElement(lst, 2)
     assert book == books[0]
 
 
 def test_isPresent(lstbooks, books):
     book = {'book_id': '10', 'book_title': 'Title 10', 'author': 'author 10'}
-    print(slt.isPresent(lstbooks, books[2]))
-    assert slt.isPresent(lstbooks, books[2]) > 0
-    assert slt.isPresent(lstbooks, book) == 0
+    assert lts.isPresent(lstbooks, books[2]) > 0
+    assert lts.isPresent(lstbooks, book) == 0
 
 
 def test_deleteElement(lstbooks, books):
-    pos = slt.isPresent(lstbooks, books[2])
+    pos = lts.isPresent(lstbooks, books[2])
     assert pos > 0
-    book = slt.getElement(lstbooks, pos)
+    book = lts.getElement(lstbooks, pos)
     assert book == books[2]
-    slt.deleteElement(lstbooks, pos)
-    assert slt.size(lstbooks) == 4
-    book = slt.getElement(lstbooks, pos)
+    lts.deleteElement(lstbooks, pos)
+    assert lts.size(lstbooks) == 4
+    book = lts.getElement(lstbooks, pos)
     assert book == books[3]
 
 
 def test_changeInfo(lstbooks):
     book10 = {'book_id': '10', 'book_title': 'Title 10', 'author': 'author 10'}
-    slt.changeInfo(lstbooks, 1, book10)
-    book = slt.getElement(lstbooks, 1)
+    lts.changeInfo(lstbooks, 1, book10)
+    book = lts.getElement(lstbooks, 1)
     assert book10 == book
 
 
 def test_exchange(lstbooks, books):
-    book1 = slt.getElement(lstbooks, 1)
-    book5 = slt.getElement(lstbooks, 5)
-    slt.exchange(lstbooks, 1, 5)
-    assert slt.getElement(lstbooks, 1) == book5
-    assert slt.getElement(lstbooks, 5) == book1
+    book1 = lts.getElement(lstbooks, 1)
+    book5 = lts.getElement(lstbooks, 5)
+    lts.exchange(lstbooks, 1, 5)
+    assert lts.getElement(lstbooks, 1) == book5
+    assert lts.getElement(lstbooks, 5) == book1
+
 
 def test_carga():
-    lista=[]
-    lst = lt.newList('ARRAY_LIST', cmpfunction) 
+    lista = []
+    lst = lt.newList('SINGLE_LINKED', cmpfunction)
 
-    file = 'Data/theMoviesdb/MoviesCastingRaw-small.csv'
-    sep= ';'
+    file = config.data_dir + 'MoviesCastingRaw-small.csv'
+    sep = ';'
     dialect = csv.excel()
     dialect.delimiter = sep
 
-
-    assert (lt.size(lst)==0), "La lista no empieza en cero."
+    assert (lt.size(lst) == 0), "La lista no empieza en cero."
 
     try:
-        with open (file, encoding='utf-8') as csvfile:
-            reader = csv.DictReader(csvfile,dialect=dialect)
+        with open(file, encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile, dialect=dialect)
 
             for row in reader:
                 lista.append(row)
-                lt.addLast(lst,row)
+                lt.addLast(lst, row)
 
     except:
         assert False, "Se presento un error al cargar el archivo."
 
     assert len(lista) == lt.size(lst), "Son diferentes tamaños."
 
-    for i in range (len(lista)):
-        assert lt.getElement(lst,i+1)==lista[i], "Las listas no estan en el mismo orden."
+    for i in range(len(lista)):
+        assert lt.getElement(lst, i + 1) == lista[i], "Las listas no estan en el mismo orden."
