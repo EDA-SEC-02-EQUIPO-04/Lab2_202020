@@ -114,28 +114,29 @@ def countElementsByCriteria(criteria, column, lst):
     Retorna la cantidad de elementos que cumplen con un criterio para una columna dada
     """
     if len(lst) == 0:
-        print('Las listas están vacías')
-        return 0, 0
+        print('La lista esta vacia')
+        return 0
     else:
         t1_start = process_time()  # tiempo inicial
-        director_movies = []# Search movies of a specific director & add them to a list.
-        for element in lst_c:
+        all_director_movies = []# Search movies of a specific director & add them to a list.
+        count_movies = 0
+        for element in lst:
             if criteria.lower() in element['director_name'].lower():  # filtrar por nombre
-                director_movies.append(element)
+                all_director_movies.append(element)
+                count_movies +=1
             # Search good movies and add vote points to list.
-        good_movies_votes = []
-        for movie in director_movies:
+        good_movies_v = []
+        for movie in all_director_movies:
             for element in lst:
                 if movie['id'] == element['id']:
                     actual_vote = float(element['vote_average'])
-                    if actual_vote >= vote_average:
-                        good_movies_votes.append(actual_vote)
-        # Calculate number of good movies and total vote average of director.
-        counter_good_movies = len(good_movies_votes)
-        total_vote_average = sum(good_movies_votes) / counter_good_movies
+                    if actual_vote >= 'vote_average':
+                        good_movies_v.append(actual_vote)# Calculate number of good movies and total vote average of director.
+        count_good_movies = len(good_movies_v)
+        final_vote_average = sum(good_movies_v) / count_good_movies
         t1_stop = process_time()  # tiempo final
         print('Tiempo de ejecución ', t1_stop - t1_start, ' segundos')
-    return counter_good_movies, round(total_vote_average, 1)
+    return (all_director_movies, count_movies, round(final_vote_average, 1))
 
 
 def orderElementsByCriteria(function, column, lst, elements):
