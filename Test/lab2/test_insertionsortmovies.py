@@ -51,7 +51,6 @@ def loadCSVFile(file, lst):
             lt.addLast(lst, row)
 
 
-
 def printList(lst):
     iterator = it.newIterator(lst)
     while it.hasNext(iterator):
@@ -60,7 +59,13 @@ def printList(lst):
 
 
 def less(element1, element2):
-    if int(element1['vote_average']) < int(element2['vote_average']):
+    if float(element1['vote_average']) < float(element2['vote_average']):
+        return True
+    return False
+
+
+def greater(element1, element2):
+    if float(element1['vote_average']) > float(element2['vote_average']):
         return True
     return False
 
