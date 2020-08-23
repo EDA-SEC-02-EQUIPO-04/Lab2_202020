@@ -91,4 +91,4 @@ def test_loading_CSV_y_ordenamiento():
         else:
             break
         print(x, y)
-        assert x > y
+        assert x > y or x == y
