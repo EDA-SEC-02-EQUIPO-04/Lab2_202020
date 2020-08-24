@@ -54,10 +54,10 @@ def load_csv_file(file_d, file_c, sep=';'):
         Borra la lista e informa al usuario
     Returns: None
     """
-    lst_d = lt.newList('ARRAY_LIST')  # Usando implementacion arraylist
-    lst_c = lt.newList('ARRAY_LIST')  # Usando implementacion arraylist
-    # lst_d = lt.newList('SINGLE_LINKED')  # Usando implementacion linkedlist
-    # lst_c = lt.newList('SINGLE_LINKED')  # Usando implementacion linkedlist
+    # lst_d = lt.newList('ARRAY_LIST')  # Usando implementacion arraylist
+    # lst_c = lt.newList('ARRAY_LIST')  # Usando implementacion arraylist
+    lst_d = lt.newList('SINGLE_LINKED')  # Usando implementacion linkedlist
+    lst_c = lt.newList('SINGLE_LINKED')  # Usando implementacion linkedlist
     print('Cargando archivos...')
     t1_start = process_time()  # tiempo inicial
     dialect = csv.excel()
@@ -71,14 +71,13 @@ def load_csv_file(file_d, file_c, sep=';'):
             for row in spamreader_c:
                 lt.addLast(lst_c, row)
     except:
-        # lst_d = lt.newList('ARRAY_LIST')  #Usando implementacion arraylist
-        # lst_c = lt.newList('ARRAY_LIST')  #Usando implementacion arraylist
-        lst_d = lt.newList('SINGLE_LINKED')  # Usando implementacion linkedlist
-        lst_c = lt.newList('SINGLE_LINKED')  # Usando implementacion linkedlist
+        lst_d = lt.newList('ARRAY_LIST')  #Usando implementacion arraylist
+        lst_c = lt.newList('ARRAY_LIST')  #Usando implementacion arraylist
+        # lst_d = lt.newList('SINGLE_LINKED')  # Usando implementacion linkedlist
+        # lst_c = lt.newList('SINGLE_LINKED')  # Usando implementacion linkedlist
         print('Se presento un error en la carga de los archivos')
     t1_stop = process_time()  # tiempo final
     print('Tiempo de ejecución ', t1_stop - t1_start, ' segundos')
-    print('Tamaño de la lista:', lst_d['size'])
     return lst_d, lst_c
 
 
@@ -137,13 +136,17 @@ def encontrar_buenas_peliculas(director, vote_average, lst_d, lst_c):
         t1_start = process_time()  # tiempo inicial
         all_director_movies = []
         # Search all director movies and add them to a list.
-        for element in lst_c['elements']:
+        iterator = it.newIterator(lst_c)
+        while it.hasNext(iterator):
+            element = it.next(iterator)
             if director.lower() in element['director_name'].lower():  # filtrar por nombre
                 all_director_movies.append(element)
         # Search good movies and add vote points to list.
         good_movies_votes = []
         for movie in all_director_movies:
-            for element in lst_d['elements']:
+            iterator = it.newIterator(lst_d)
+            while it.hasNext(iterator):
+                element = it.next(iterator)
                 if movie['id'] == element['id']:
                     actual_vote = float(element['vote_average'])
                     if actual_vote >= vote_average:
@@ -167,13 +170,17 @@ def conocer_director(director, lst_d, lst_c):
         t1_start = process_time()  # tiempo inicial
         all_director_movies = []
         # Search all director movies and add them to a list.
-        for element in lst_c['elements']:
+        iterator = it.newIterator(lst_c)
+        while it.hasNext(iterator):
+            element = it.next(iterator)
             if director.lower() in element['director_name'].lower():  # filtrar por nombre
                 all_director_movies.append(element)
         # Search movies and add vote points to list.
         movies_votes = []
         for movie in all_director_movies:
-            for element in lst_d['elements']:
+            iterator = it.newIterator(lst_d)
+            while it.hasNext(iterator):
+                element = it.next(iterator)
                 if movie['id'] == element['id']:
                     actual_vote = float(element['vote_average'])
                     movies_votes.append(actual_vote)
@@ -262,14 +269,14 @@ def main():
                 details_list, casting_list = load_csv_file('../Data/MoviesDetailsCleaned-small.csv',
                                                            '../Data/MoviesCastingRaw-small.csv')  # Cargar datos
                 if len(details_list) == len(casting_list):
-                    print('Datos cargados, ' + str(len(details_list['elements'])) + ' elementos cargados en listas')
+                    print('Datos cargados, ' + str(details_list['size']) + ' elementos cargados en listas')
                 else:
                     print('Datos cargados, aunque inconsistentes')
             elif int(inputs[0]) == 2:  # opcion 2
-                if len(details_list['elements']) == 0:  # obtener la longitud de la lista
+                if details_list['size'] == 0:  # obtener la longitud de la lista
                     print('La lista esta vacía')
                 else:
-                    print('La lista tiene ' + str(len(details_list['elements'])) + ' elementos')
+                    print('La lista tiene ' + str(details_list['size']) + ' elementos')
             elif int(inputs[0]) == 3:  # opcion 3
                 director = input('Ingrese un director para consultar su cantidad de películas:\n')  # filtrar columna
                 counter_movies = cantidad_peliculas_director(director, 'director_name', casting_list)
@@ -285,7 +292,7 @@ def main():
                 while int(req) < 10:
                     req = input('Ingrese por lo menos 10 películas requeridas: ')
                 # Sorting direction.
-                function = input('Ingrese 1 para orden ascendente o 2 para descendente: ')
+                function = input('Ingrese 1 para orden descendente o 2 para ascendente: ')
                 if function == '1':
                     function = 'greater'
                 elif function == '2':
