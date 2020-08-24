@@ -35,8 +35,21 @@ from DataStructures import liststructure as lt
 from Sorting import shellsort as shell
 from Sorting import selectionsort as selection
 from Sorting import insertionsort as insertion
-
 from time import process_time
+
+
+def print_menu():
+    """
+    Imprime el menu de opciones
+    """
+    print('\nBienvenido')
+    print('1- Cargar Datos')
+    print('2- Contar las películas de la Lista')
+    print('3- Contar películas de un director')
+    print('4- Consultar buenas películas de un director')
+    print('5- Ordenar películas por votos')
+    print('6- Conocer a un director y todas sus películas')
+    print('0- Salir')
 
 
 def load_csv_file(file_d, file_c, sep=';'):
@@ -54,48 +67,27 @@ def load_csv_file(file_d, file_c, sep=';'):
         Borra la lista e informa al usuario
     Returns: None
     """
-    # lst_d = lt.newList('ARRAY_LIST')  # Usando implementacion arraylist
-    # lst_c = lt.newList('ARRAY_LIST')  # Usando implementacion arraylist
-    lst_d = lt.newList('SINGLE_LINKED')  # Usando implementacion linkedlist
-    lst_c = lt.newList('SINGLE_LINKED')  # Usando implementacion linkedlist
+    # lst_d, lst_c = lt.newList('ARRAY_LIST'), lt.newList('ARRAY_LIST')  # Usando implementacion arraylist
+    lst_d, lst_c = lt.newList('SINGLE_LINKED'), lt.newList('SINGLE_LINKED')  # Usando implementacion linkedlist
     print('Cargando archivos...')
-    t1_start = process_time()  # tiempo inicial
-    dialect = csv.excel()
-    dialect.delimiter = sep
+    t1_start = process_time()  # Start time
+    dialect, dialect.delimiter = csv.excel(), sep
     try:
         with open(file_d, encoding='utf-8-sig') as csvfile_d, open(file_c, encoding='utf-8-sig') as csvfile_c:
-            spamreader_d = csv.DictReader(csvfile_d, dialect=dialect)
-            spamreader_c = csv.DictReader(csvfile_c, dialect=dialect)
-            for row in spamreader_d:
-                lt.addLast(lst_d, row)
-            for row in spamreader_c:
-                lt.addLast(lst_c, row)
+            spamreader_d, spamreader_c = (csv.DictReader(csvfile_d, dialect=dialect),
+                                          csv.DictReader(csvfile_c, dialect=dialect))
+            for row_d, row_c in zip(spamreader_d, spamreader_c):
+                lt.addLast(lst_d, row_d)
+                lt.addLast(lst_c, row_c)
     except:
-        lst_d = lt.newList('ARRAY_LIST')  #Usando implementacion arraylist
-        lst_c = lt.newList('ARRAY_LIST')  #Usando implementacion arraylist
-        # lst_d = lt.newList('SINGLE_LINKED')  # Usando implementacion linkedlist
-        # lst_c = lt.newList('SINGLE_LINKED')  # Usando implementacion linkedlist
-        print('Se presento un error en la carga de los archivos')
-    t1_stop = process_time()  # tiempo final
+        lst_d, lst_c = lt.newList('ARRAY_LIST'), lt.newList('ARRAY_LIST')
+        print('Se presentó un error en la carga de los archivos')
+    t1_stop = process_time()  # Final time
     print('Tiempo de ejecución ', t1_stop - t1_start, ' segundos')
     return lst_d, lst_c
 
 
-def print_menu():
-    """
-    Imprime el menu de opciones
-    """
-    print('\nBienvenido')
-    print('1- Cargar Datos')
-    print('2- Contar los elementos de la Lista')
-    print('3- Contar películas filtradas por palabra clave')
-    print('4- Consultar buenas películas de un director')
-    print('5- Ordenar películas por votos')
-    print('6- Conocer a un director y todas sus películas')
-    print('0- Salir')
-
-
-def cantidad_peliculas_director(director, column, lst):
+def count_director_movies(director, column, lst):
     """
     Retorna cuantos elementos coinciden con un criterio para una columna dada  
     Args:
@@ -125,7 +117,25 @@ def cantidad_peliculas_director(director, column, lst):
     return counter
 
 
-def encontrar_buenas_peliculas(director, vote_average, lst_d, lst_c):
+def get_director_movie_ids(search, result, director):
+    iterator = it.newIterator(search)
+    while it.hasNext(iterator):
+        element = it.next(iterator)
+        if director.lower() in element['director_name'].lower():  # filtrar por nombre
+            lt.addLast(result, element['id'])
+
+
+def movies_total_average(movies):
+    iterator = it.newIterator(movies)
+    votes_sum = 0
+    while it.hasNext(iterator):
+        element = it.next(iterator)
+        votes_sum += float(element['vote_average'])
+    total_vote_average = votes_sum / movies['size']
+    return round(total_vote_average, 1)
+
+
+def find_good_movies(director, vote_average, lst_d, lst_c):
     """
     Retorna la cantidad de elementos que cumplen con un criterio para una columna dada
     """
@@ -134,32 +144,29 @@ def encontrar_buenas_peliculas(director, vote_average, lst_d, lst_c):
         return 0, 0
     else:
         t1_start = process_time()  # tiempo inicial
-        all_director_movies = []
-        # Search all director movies and add them to a list.
-        iterator = it.newIterator(lst_c)
-        while it.hasNext(iterator):
-            element = it.next(iterator)
-            if director.lower() in element['director_name'].lower():  # filtrar por nombre
-                all_director_movies.append(element)
+        all_director_movies, good_movies = (lt.newList('ARRAY_LIST') for _ in range(2))
+        # Search all director movie ids and add them to a list.
+        get_director_movie_ids(lst_c, all_director_movies, director)
         # Search good movies and add vote points to list.
-        good_movies_votes = []
-        for movie in all_director_movies:
-            iterator = it.newIterator(lst_d)
-            while it.hasNext(iterator):
-                element = it.next(iterator)
-                if movie['id'] == element['id']:
-                    actual_vote = float(element['vote_average'])
+        iterator_ids = it.newIterator(all_director_movies)
+        while it.hasNext(iterator_ids):
+            movie_id = it.next(iterator_ids)
+            iterator_movies = it.newIterator(lst_d)
+            while it.hasNext(iterator_movies):
+                movie = it.next(iterator_movies)
+                if movie_id == movie['id']:
+                    actual_vote = float(movie['vote_average'])
                     if actual_vote >= vote_average:
-                        good_movies_votes.append(actual_vote)
+                        lt.addLast(good_movies, movie)
+        show_movies(good_movies, director)
         # Calculate number of good movies and total vote average of director.
-        counter_good_movies = len(good_movies_votes)
-        total_vote_average = sum(good_movies_votes) / counter_good_movies
+        total_vote_average = movies_total_average(good_movies)
         t1_stop = process_time()  # tiempo final
         print('Tiempo de ejecución ', t1_stop - t1_start, ' segundos')
-    return counter_good_movies, round(total_vote_average, 1)
+    return good_movies['size'], total_vote_average
 
 
-def conocer_director(director, lst_d, lst_c):
+def know_director(director, lst_d, lst_c):
     """
     Retorna la cantidad de elementos que cumplen con un criterio para una columna dada
     """
@@ -168,28 +175,40 @@ def conocer_director(director, lst_d, lst_c):
         return 0, 0
     else:
         t1_start = process_time()  # tiempo inicial
-        all_director_movies = []
-        # Search all director movies and add them to a list.
-        iterator = it.newIterator(lst_c)
-        while it.hasNext(iterator):
-            element = it.next(iterator)
-            if director.lower() in element['director_name'].lower():  # filtrar por nombre
-                all_director_movies.append(element)
+        all_director_movies, movies_data = (lt.newList('ARRAY_LIST') for _ in range(2))
+        # Search all director movie ids and add them to a list.
+        get_director_movie_ids(lst_c, all_director_movies, director)
         # Search movies and add vote points to list.
-        movies_votes = []
-        for movie in all_director_movies:
-            iterator = it.newIterator(lst_d)
-            while it.hasNext(iterator):
-                element = it.next(iterator)
-                if movie['id'] == element['id']:
-                    actual_vote = float(element['vote_average'])
-                    movies_votes.append(actual_vote)
+        iterator_ids = it.newIterator(all_director_movies)
+        while it.hasNext(iterator_ids):
+            movie_id = it.next(iterator_ids)
+            iterator_movies = it.newIterator(lst_d)
+            while it.hasNext(iterator_movies):
+                movie = it.next(iterator_movies)
+                if movie_id == movie['id']:
+                    lt.addLast(movies_data, movie)
+        show_movies(movies_data, director)
         # Calculate number of movies and total vote average of director.
-        counter_movies = len(movies_votes)
-        total_vote_average = sum(movies_votes) / counter_movies
+        total_vote_average = movies_total_average(movies_data)
         t1_stop = process_time()  # tiempo final
         print('Tiempo de ejecución ', t1_stop - t1_start, ' segundos')
-    return all_director_movies, counter_movies, round(total_vote_average, 1)
+    return movies_data['size'], total_vote_average
+
+
+def show_movies(movies, director):
+    if director is not None:
+        print('Las películas dirigidas por', director, 'son:')
+        iterator = it.newIterator(movies)
+        while it.hasNext(iterator):
+            element = it.next(iterator)
+            print('-', element['title'])
+    else:
+        iterator = it.newIterator(movies)
+        while it.hasNext(iterator):
+            element = it.next(iterator)
+            print('-', element['title'] + ':',
+                  '\n   con un puntaje promedio de', element['vote_average'],
+                  'y un total de', element['vote_count'], 'votaciones')
 
 
 def less_average(element1, element2):
@@ -222,7 +241,6 @@ def order_movies(function, lst_d, req_elements, algorithm, column):
     """
     if len(lst_d) == 0:
         print('Las listas están vacías')
-        return []
     else:
         t1_start = process_time()  # tiempo inicial
         # Sort movies.
@@ -248,8 +266,10 @@ def order_movies(function, lst_d, req_elements, algorithm, column):
                 insertion.insertionSort(lst_d, greater_count) if column == 'vote_count' \
                     else insertion.insertionSort(lst_d, greater_average)
         t1_stop = process_time()  # tiempo final
+        print(req_elements, 'best' if function == 'greater' else 'worst',
+              'count:' if column == 'vote_count' else 'average:')
+        show_movies(lt.subList(lst_d, 0, int(req_elements)), None)
         print('Tiempo de ejecución ', t1_stop - t1_start, ' segundos')
-    return lt.subList(lst_d, 0, int(req_elements))
 
 
 def main():
@@ -260,7 +280,7 @@ def main():
     Args: None
     Return: None 
     """
-
+    details_list = lt.newList('ARRAY_LIST')
     while True:
         print_menu()  # imprimir el menu de opciones en consola
         inputs = input('Seleccione una opción para continuar:\n')  # leer opción ingresada
@@ -279,11 +299,11 @@ def main():
                     print('La lista tiene ' + str(details_list['size']) + ' elementos')
             elif int(inputs[0]) == 3:  # opcion 3
                 director = input('Ingrese un director para consultar su cantidad de películas:\n')  # filtrar columna
-                counter_movies = cantidad_peliculas_director(director, 'director_name', casting_list)
+                counter_movies = count_director_movies(director, 'director_name', casting_list)
                 print('Coinciden', counter_movies, 'elementos con el director', director)
             elif int(inputs[0]) == 4:  # opcion 4
                 director = input('Ingrese el nombre del director para conocer sus buenas películas:\n')
-                counter, average = encontrar_buenas_peliculas(director, 6, details_list, casting_list)
+                counter, average = find_good_movies(director, 6, details_list, casting_list)
                 print('Existen', counter, 'buenas películas del director', director, 'en el catálogo')
                 print('Las buenas películas de este director tienen un promedio de votación de', average, 'puntos.')
             elif int(inputs[0]) == 5:  # opcion 5
@@ -292,22 +312,22 @@ def main():
                 while int(req) < 10:
                     req = input('Ingrese por lo menos 10 películas requeridas: ')
                 # Sorting direction.
-                function = input('Ingrese 1 para orden descendente o 2 para ascendente: ')
+                function = input('\nIngrese 1 para orden descendente\no 2 para ascendente: ')
                 if function == '1':
                     function = 'greater'
                 elif function == '2':
                     function = 'less'
                 # Column criteria for sorting.
-                column = input('Ingrese 1 para ordenar por cantidad de votos o '
-                               '2 para ordenar por calificación promedio: ')
+                column = input('\nIngrese 1 para ordenar por cantidad de votos\n'
+                               'o 2 para ordenar por calificación promedio: ')
                 if column == '1':
                     column = 'vote_count'
                 elif column == '2':
                     column = 'vote_average'
                 # Type of sorting.
-                algorithm = input('Ingrese 1 para ordenar con selection sorting o '
-                                  '2 para ordenar con shell sorting o '
-                                  '3 para ordenar con insertion sorting: ')
+                algorithm = input('\nIngrese 1 para ordenar con selection sorting\n'
+                                  'o 2 para ordenar con shell sorting\n'
+                                  'o 3 para ordenar con insertion sorting: ')
                 if algorithm == '1':
                     algorithm = 'selection'
                 elif algorithm == '2':
@@ -315,15 +335,10 @@ def main():
                 elif algorithm == '3':
                     algorithm = 'insertion'
                 # Show results.
-                ordered_list = order_movies(function, details_list, req, algorithm, column)
-                print(ordered_list)
-                print(req, 'best' if function == 'greater' else 'worst',
-                      'count' if column == 'vote_count' else 'average')
-                print('Se ordenó la lista')
+                order_movies(function, details_list, req, algorithm, column)
             elif int(inputs[0]) == 6:  # opcion 6
                 director = input('Ingrese el nombre del director para conocer su trabajo:\n')
-                peliculas, counter, average = conocer_director(director, details_list, casting_list)
-                print('Las películas dirigidas por', director, 'son:\n', peliculas)
+                counter, average = know_director(director, details_list, casting_list)
                 print('Existen', counter, 'películas del director', director, 'en el catálogo')
                 print('Las películas de este director tienen un promedio de votación de', average, 'puntos.')
             elif int(inputs[0]) == 0:  # opcion 0, salir
