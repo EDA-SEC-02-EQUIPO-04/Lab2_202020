@@ -196,11 +196,19 @@ def know_director(director, lst_d, lst_c):
 
 
 def show_movies(movies, director):
-    print('Las películas dirigidas por', director, 'son:')
-    iterator = it.newIterator(movies)
-    while it.hasNext(iterator):
-        element = it.next(iterator)
-        print('-', element['title'])
+    if director is not None:
+        print('Las películas dirigidas por', director, 'son:')
+        iterator = it.newIterator(movies)
+        while it.hasNext(iterator):
+            element = it.next(iterator)
+            print('-', element['title'])
+    else:
+        iterator = it.newIterator(movies)
+        while it.hasNext(iterator):
+            element = it.next(iterator)
+            print('-', element['title'] + ':',
+                  '\n   con un puntaje promedio de', element['vote_average'],
+                  'y un total de', element['vote_count'], 'votaciones')
 
 
 def less_average(element1, element2):
@@ -233,7 +241,6 @@ def order_movies(function, lst_d, req_elements, algorithm, column):
     """
     if len(lst_d) == 0:
         print('Las listas están vacías')
-        return []
     else:
         t1_start = process_time()  # tiempo inicial
         # Sort movies.
@@ -259,8 +266,10 @@ def order_movies(function, lst_d, req_elements, algorithm, column):
                 insertion.insertionSort(lst_d, greater_count) if column == 'vote_count' \
                     else insertion.insertionSort(lst_d, greater_average)
         t1_stop = process_time()  # tiempo final
+        print(req_elements, 'best' if function == 'greater' else 'worst',
+              'count:' if column == 'vote_count' else 'average:')
+        show_movies(lt.subList(lst_d, 0, int(req_elements)), None)
         print('Tiempo de ejecución ', t1_stop - t1_start, ' segundos')
-    return lt.subList(lst_d, 0, int(req_elements))
 
 
 def main():
@@ -303,22 +312,22 @@ def main():
                 while int(req) < 10:
                     req = input('Ingrese por lo menos 10 películas requeridas: ')
                 # Sorting direction.
-                function = input('Ingrese 1 para orden descendente o 2 para ascendente: ')
+                function = input('\nIngrese 1 para orden descendente\no 2 para ascendente: ')
                 if function == '1':
                     function = 'greater'
                 elif function == '2':
                     function = 'less'
                 # Column criteria for sorting.
-                column = input('Ingrese 1 para ordenar por cantidad de votos o '
-                               '2 para ordenar por calificación promedio: ')
+                column = input('\nIngrese 1 para ordenar por cantidad de votos\n'
+                               'o 2 para ordenar por calificación promedio: ')
                 if column == '1':
                     column = 'vote_count'
                 elif column == '2':
                     column = 'vote_average'
                 # Type of sorting.
-                algorithm = input('Ingrese 1 para ordenar con selection sorting o '
-                                  '2 para ordenar con shell sorting o '
-                                  '3 para ordenar con insertion sorting: ')
+                algorithm = input('\nIngrese 1 para ordenar con selection sorting\n'
+                                  'o 2 para ordenar con shell sorting\n'
+                                  'o 3 para ordenar con insertion sorting: ')
                 if algorithm == '1':
                     algorithm = 'selection'
                 elif algorithm == '2':
@@ -326,11 +335,7 @@ def main():
                 elif algorithm == '3':
                     algorithm = 'insertion'
                 # Show results.
-                ordered_list = order_movies(function, details_list, req, algorithm, column)
-                print(ordered_list)
-                print(req, 'best' if function == 'greater' else 'worst',
-                      'count' if column == 'vote_count' else 'average')
-                print('Se ordenó la lista')
+                order_movies(function, details_list, req, algorithm, column)
             elif int(inputs[0]) == 6:  # opcion 6
                 director = input('Ingrese el nombre del director para conocer su trabajo:\n')
                 counter, average = know_director(director, details_list, casting_list)
